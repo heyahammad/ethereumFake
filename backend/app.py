@@ -204,7 +204,7 @@ def get_source():
 # ------------------------------------------------------
 # GET /source_by_url?url=... - Retrieves source data by URL
 # ------------------------------------------------------
-@app.get("/source_by_url")
+@app.get("/getNews")
 def get_source_by_url():
     url_query = request.args.get("url")
     if not url_query:
