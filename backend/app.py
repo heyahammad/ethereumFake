@@ -232,5 +232,11 @@ def get_source_by_url():
 # Start Server
 # ------------------------------------------------------
 if __name__ == "__main__":
-    print("Server running → http://127.0.0.1:5000")
-    app.run(debug=True)
+    # 1. Get the PORT from Render's environment, default to 5000 for local testing
+    port = int(os.environ.get("PORT", 5000))
+    
+    print(f"Server running → http://0.0.0.0:{port}")
+    
+    # 2. Host MUST be '0.0.0.0' for Render to see it
+    # 3. Disable debug mode for production security
+    app.run(host='0.0.0.0', port=port, debug=False)
