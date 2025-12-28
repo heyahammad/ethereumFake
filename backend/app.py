@@ -226,7 +226,43 @@ def get_source_by_url():
             "error": "URL not found in registry",
             "details": str(e)
         }), 404
+# ------------------------------------------------------
+# GET /getNewsByPublisher?publisher=... 
+# Retrieves all URLs for a specific publisher
+# ------------------------------------------------------
+@app.get("/getNewsByPublisher")
+def get_sources_by_publisher():
+    publisher_query = request.args.get("publisher")
+    
+    if not publisher_query:
+        return jsonify({"error": "Publisher parameter is required"}), 400
 
+    try:
+        # Call the new contract function 'getSourcesByPublisher'
+        # The contract returns a list (array) of strings, which web3.py converts to a Python list
+        retrieved_urls = contract.functions.getSourcesByPublisher(publisher_query).call()
+        
+        # If the list is empty, it means no records were found for that publisher
+        if not retrieved_urls:
+            return jsonify({
+                "status": "success",
+                "message": f"No sources found for publisher: {publisher_query}",
+                "urls": []
+            }), 200
+
+        return jsonify({
+            "status": "success",
+            "publisher": publisher_query,
+            "count": len(retrieved_urls),
+            "urls": retrieved_urls
+        }), 200
+
+    except Exception as e:
+        print(f"❌ Error fetching by publisher: {e}")
+        return jsonify({
+            "error": "Failed to retrieve sources",
+            "details": str(e)
+        }), 500
 
 # ------------------------------------------------------
 # Start Server
